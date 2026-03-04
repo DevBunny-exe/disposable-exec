@@ -1,0 +1,14 @@
+## Project status
+
+Early prototype.
+
+Currently supports:
+
+- bash scripts
+- CLI tools
+- install scripts
+
+Future improvements:
+
+- stronger sandboxing
+- microVM isolation
