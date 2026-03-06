@@ -33,4 +33,4 @@ def run(script):
         if result["status"] != "running":
             return result
 
-        time.sleep(0.5)
+        time.sleep(1)
