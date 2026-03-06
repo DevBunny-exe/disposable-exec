@@ -1,6 +1,8 @@
 import requests
+import time
 
 API_URL = "http://130.51.23.85/run"
+RESULT_URL = "http://130.51.23.85/result/"
 TOKEN = "exec_secret_123"
 
 def run(script):
@@ -9,4 +11,19 @@ def run(script):
         json={"script": script},
         headers={"x-token": TOKEN}
     )
-    return r.json()
+
+    data = r.json()
+
+    if data["status"] != "queued":
+        return data
+
+    job_id = data["job_id"]
+
+    while True:
+        r = requests.get(RESULT_URL + job_id)
+        result = r.json()
+
+        if result["status"] != "running":
+            return result
+
+        time.sleep(0.5)
