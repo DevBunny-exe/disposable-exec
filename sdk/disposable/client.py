@@ -3,7 +3,7 @@ import time
 
 API_URL = "http://130.51.23.85/run"
 RESULT_URL = "http://130.51.23.85/result/"
-TOKEN = "exec_secret_123"
+TOKEN = "free_test_key"
 
 def run(script):
     r = requests.post(
