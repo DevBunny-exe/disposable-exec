@@ -1,11 +1,34 @@
-## How it works
+# Disposable Exec Architecture
 
-The execution flow:
+Disposable Exec is a lightweight sandbox runtime for executing
+AI-generated Python code safely.
 
-user command
-→ disposable container created
-→ command executed
-→ logs captured
-→ container destroyed
+The system consists of three components:
 
-The host machine is never exposed to the executed script.
+1. SDK (client)
+2. Execution API server
+3. Isolated runtime
+
+Architecture flow:
+
+AI Agent
+   │
+   │ SDK call
+   ▼
+Disposable Client
+   │
+   │ HTTP request
+   ▼
+Disposable Server
+   │
+   │ spawn sandbox
+   ▼
+Disposable Runtime
+   │
+   │ execute python code
+   ▼
+Result (stdout / stderr / exit_code)
+
+Example flow:
+
+Agent → SDK.run() → HTTP /run → sandbox execution → return result
