@@ -9,23 +9,19 @@ API_KEYS = {
 # plan → quota
 PLAN_QUOTA = {
     "Free": 50,
-    "Starter": 5000,
-    "Pro": 30000,
-    "Scale": 150000
+    "Starter": 3000,
+    "Pro": 20000,
+    "Scale": 100000
 }
 
+def get_plan_quota(plan: str) -> int:
+    return PLAN_QUOTA.get(plan, 0)
 
 def check_quota(api_key):
-
     usage = load_usage()
-
     used = usage.get(api_key, 0)
 
     plan = API_KEYS.get(api_key, "Free")
+    quota = get_plan_quota(plan)
 
-    quota = PLAN_QUOTA[plan]
-
-    if used >= quota:
-        return False, quota, used
-
-    return True, quota, used
+    return used < quota
