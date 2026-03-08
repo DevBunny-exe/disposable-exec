@@ -1,13 +1,1 @@
-[
-  {
-    "id": "sub_001",
-    "user_id": "user_001",
-    "provider": "paddle",
-    "provider_subscription_id": "abc123",
-    "plan": "Pro",
-    "status": "active",
-    "quota_monthly": 20000,
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31"
-  }
-]
+[]
