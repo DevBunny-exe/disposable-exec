@@ -4,12 +4,91 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Refund Policy - Disposable Exec</title>
+  <meta name="description" content="Refund Policy for Disposable Exec." />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121933;
+      --text: #e8ecf8;
+      --muted: #a8b0c7;
+      --line: #263153;
+      --primary: #6ea8fe;
+      --max: 920px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #0b1020 0%, #0e1428 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.75;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    .container { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+    .nav {
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(11,16,32,0.75);
+    }
+    .nav-links { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+    .content { padding: 52px 0; }
+    h1 { font-size: 38px; margin: 0 0 14px; }
+    h2 { margin-top: 34px; font-size: 22px; }
+    p, li { color: var(--muted); }
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 28px;
+    }
+    ul { padding-left: 18px; }
+  </style>
 </head>
 <body>
-  <h1>Refund Policy</h1>
-  <p>Refund requests are reviewed case by case.</p>
-  <p>If the service is materially unavailable or not delivered as described, eligible customers may request a refund within 7 days of purchase.</p>
-  <p>Refunds will generally not be issued for normal usage consumption, change of mind, or violations of service terms.</p>
-  <p><a href="./index.html">Back to home</a></p>
+  <header class="nav">
+    <div class="container nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./pricing.html">Pricing</a>
+      <a href="./terms.html">Terms</a>
+      <a href="./privacy.html">Privacy</a>
+    </div>
+  </header>
+
+  <main class="container content">
+    <div class="panel">
+      <h1>Refund Policy</h1>
+      <p>
+        Refund requests are reviewed on a case-by-case basis.
+      </p>
+
+      <h2>1. Eligible Refunds</h2>
+      <p>
+        A refund may be considered if the service is materially unavailable, not delivered as described, or subject to a verified billing error.
+      </p>
+
+      <h2>2. Time Window</h2>
+      <p>
+        Customers should submit refund requests within 7 days of the original charge unless otherwise required by applicable law.
+      </p>
+
+      <h2>3. Non-Refundable Cases</h2>
+      <ul>
+        <li>Normal usage consumption under an active plan</li>
+        <li>Change of mind after purchase</li>
+        <li>Violations of service terms or abuse of the platform</li>
+        <li>Failure to use the service after access has been provided</li>
+      </ul>
+
+      <h2>4. Billing Providers</h2>
+      <p>
+        Refund handling may be processed through the authorized billing provider used for your purchase. Provider rules and payment processor requirements may also apply.
+      </p>
+
+      <h2>5. Contact</h2>
+      <p>
+        If you need support regarding a billing issue, use the support or contact method provided during onboarding or account setup.
+      </p>
+    </div>
+  </main>
 </body>
 </html>
