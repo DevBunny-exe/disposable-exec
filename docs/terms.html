@@ -4,14 +4,114 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terms of Service - Disposable Exec</title>
+  <meta name="description" content="Terms of Service for Disposable Exec." />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121933;
+      --text: #e8ecf8;
+      --muted: #a8b0c7;
+      --line: #263153;
+      --primary: #6ea8fe;
+      --max: 920px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #0b1020 0%, #0e1428 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.75;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    .container { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+    .nav {
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(11,16,32,0.75);
+    }
+    .nav-links { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+    .content {
+      padding: 52px 0;
+    }
+    h1 { font-size: 38px; margin: 0 0 14px; }
+    h2 { margin-top: 34px; font-size: 22px; }
+    p, li { color: var(--muted); }
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 28px;
+    }
+    ul { padding-left: 18px; }
+  </style>
 </head>
 <body>
-  <h1>Terms of Service</h1>
-  <p>Disposable Exec provides hosted code execution infrastructure for developers, AI agents, and automation tools.</p>
-  <p>By using this service, you agree not to submit illegal, abusive, malicious, or harmful workloads.</p>
-  <p>We may suspend or terminate access for misuse, abuse, or attempts to disrupt service stability or security.</p>
-  <p>Service is provided on an as-is and as-available basis without warranties of uninterrupted availability.</p>
-  <p>Usage limits, execution limits, and plan quotas apply based on the subscription selected.</p>
-  <p><a href="./index.html">Back to home</a></p>
+  <header class="nav">
+    <div class="container nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./pricing.html">Pricing</a>
+      <a href="./privacy.html">Privacy</a>
+      <a href="./refund.html">Refund</a>
+    </div>
+  </header>
+
+  <main class="container content">
+    <div class="panel">
+      <h1>Terms of Service</h1>
+      <p>
+        These Terms of Service govern your use of Disposable Exec, a hosted code execution service for AI agents, automations, and developer tools.
+      </p>
+
+      <h2>1. Service</h2>
+      <p>
+        Disposable Exec provides hosted code execution infrastructure for short-lived execution tasks. The service may include APIs, SDKs, usage limits, and operational controls intended to maintain platform stability and security.
+      </p>
+
+      <h2>2. Acceptable Use</h2>
+      <p>You agree not to use the service for:</p>
+      <ul>
+        <li>Illegal, harmful, abusive, or fraudulent activity</li>
+        <li>Malware, unauthorized access attempts, or service disruption</li>
+        <li>Workloads intended to exhaust system resources or bypass platform restrictions</li>
+        <li>Activity that violates applicable law or third-party rights</li>
+      </ul>
+
+      <h2>3. Accounts and Access</h2>
+      <p>
+        Access may require an API key, subscription, or other account credentials. You are responsible for maintaining the confidentiality of your credentials and for activity performed using your account.
+      </p>
+
+      <h2>4. Usage Limits</h2>
+      <p>
+        Plans may include execution limits, rate limits, and other operational restrictions. We may enforce limits or suspend access to protect system reliability, security, and fair usage across customers.
+      </p>
+
+      <h2>5. Suspension and Termination</h2>
+      <p>
+        We may suspend or terminate access to the service if we reasonably believe your use poses operational, legal, billing, or security risk, or if you violate these terms.
+      </p>
+
+      <h2>6. Availability</h2>
+      <p>
+        The service is provided on an as-is and as-available basis. We do not guarantee uninterrupted availability, error-free operation, or fitness for a particular purpose.
+      </p>
+
+      <h2>7. Billing</h2>
+      <p>
+        Paid plans are billed according to the pricing presented at the time of purchase. Subscription, renewal, cancellation, and refund handling may be managed through an authorized billing provider.
+      </p>
+
+      <h2>8. Liability</h2>
+      <p>
+        To the maximum extent permitted by law, Disposable Exec will not be liable for indirect, incidental, special, consequential, or exemplary damages arising from your use of the service.
+      </p>
+
+      <h2>9. Changes</h2>
+      <p>
+        We may update these terms from time to time. Continued use of the service after updated terms are published constitutes acceptance of those changes.
+      </p>
+    </div>
+  </main>
 </body>
 </html>
