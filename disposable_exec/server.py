@@ -1,50 +1,75 @@
-from fastapi import FastAPI, Depends, HTTPException
-from disposable_exec.auth import verify_api_key
-from disposable_exec.rate_limit import check_rate_limit
-from disposable_exec.queue import enqueue_job
-from disposable_exec.plans import check_quota
-from disposable_exec.results import get_result
-from disposable_exec.status import get_status
+from fastapi import FastAPI, HTTPException, Depends
+from pydantic import BaseModel
+import uuid
 
-app = FastAPI()
+from .auth import verify_api_key
+from .plans import get_plan_quota
+from .usage import get_usage_count, increment_usage
+from .billing import handle_paddle_webhook
+
+# 你原本项目里如果这些名字不同，再按你现有函数名改
+from .queue import enqueue_execution
+from .status import get_status
+from .results import get_result
+
+
+app = FastAPI(title="Disposable Exec API")
+
+
+class RunRequest(BaseModel):
+    script: str
+
+
+@app.get("/")
+def root():
+    return {"ok": True, "service": "disposable-exec"}
 
 
 @app.post("/run")
-def run_code(data: dict, api_key: str = Depends(verify_api_key)):
+def run_code(payload: RunRequest, api_key=Depends(verify_api_key)):
+    plan = api_key.get("plan", "Free")
+    key_id = api_key.get("id")
 
-    check_rate_limit(api_key)
+    if not key_id:
+        raise HTTPException(status_code=500, detail="API key record missing id")
 
-    allowed, quota, used = check_quota(api_key)
+    quota = get_plan_quota(plan)
+    used = get_usage_count(key_id)
 
-    if not allowed:
-        raise HTTPException(
-            status_code=403,
-            detail=f"Quota exceeded: {used}/{quota}"
-        )
+    if used >= quota:
+        raise HTTPException(status_code=403, detail="Monthly execution quota exceeded")
 
-    script = data["script"]
+    execution_id = str(uuid.uuid4())
 
-    return enqueue_job(script, api_key)
+    # 扣配额：先扣再入队
+    increment_usage(key_id)
+
+    enqueue_execution(execution_id=execution_id, script=payload.script)
+
+    return {
+        "execution_id": execution_id,
+        "plan": plan,
+        "used": used + 1,
+        "quota": quota
+    }
 
 
 @app.get("/status/{execution_id}")
-def status(execution_id: str):
+def status(execution_id: str, api_key=Depends(verify_api_key)):
+    data = get_status(execution_id)
+    if data is None:
+        raise HTTPException(status_code=404, detail="Execution not found")
+    return data
 
-    status = get_status(execution_id)
-
-    if not status:
-        return {"status": "unknown"}
-
-    return {"status": status}
 
 @app.get("/result/{execution_id}")
-def result(execution_id: str):
-
-    result = get_result(execution_id)
-
-    if not result:
-        return {"status": "pending"}
-
-    return result
+def result(execution_id: str, api_key=Depends(verify_api_key)):
+    data = get_result(execution_id)
+    if data is None:
+        raise HTTPException(status_code=404, detail="Result not found")
+    return data
 
 
+@app.post("/billing/webhook")
+def billing_webhook(payload: dict):
+    return handle_paddle_webhook(payload)
