@@ -1,31 +1,40 @@
-import json
-import os
+from datetime import datetime
 
-USAGE_FILE = "usage.json"
+from .storage_utils import load_json, save_json, STORAGE_DIR
+
+
+USAGE_FILE = STORAGE_DIR / "usage.json"
+
+
+def get_period_key() -> str:
+    return datetime.utcnow().strftime("%Y-%m")
 
 
 def load_usage():
-    if not os.path.exists(USAGE_FILE):
-        return {}
-
-    with open(USAGE_FILE, "r") as f:
-        return json.load(f)
+    return load_json(USAGE_FILE, {})
 
 
 def save_usage(data):
-    with open(USAGE_FILE, "w") as f:
-        json.dump(data, f)
+    save_json(USAGE_FILE, data)
 
 
-def increment_usage(api_key):
+def get_usage_count(key_id: str, period_key: str | None = None) -> int:
+    if period_key is None:
+        period_key = get_period_key()
+
+    usage = load_usage()
+    return usage.get(key_id, {}).get(period_key, 0)
+
+
+def increment_usage(key_id: str, period_key: str | None = None) -> int:
+    if period_key is None:
+        period_key = get_period_key()
 
     usage = load_usage()
 
-    if api_key not in usage:
-        usage[api_key] = 0
+    if key_id not in usage:
+        usage[key_id] = {}
 
-    usage[api_key] += 1
-
+    usage[key_id][period_key] = usage[key_id].get(period_key, 0) + 1
     save_usage(usage)
-
-    return usage[api_key]
+    return usage[key_id][period_key]
