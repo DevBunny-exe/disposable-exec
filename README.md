@@ -68,6 +68,7 @@ Auth / Quota / Rate Limit / Subscription Check
 stdout / stderr / exit_code / duration
         ↓
 SQLite storage
+```
 
 ## Current pricing
 
