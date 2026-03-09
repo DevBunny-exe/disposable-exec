@@ -4,7 +4,6 @@ from .storage_utils import load_json, save_json, STORAGE_DIR
 from .plans import get_plan_quota
 from .auth import create_api_key
 
-
 USERS_FILE = STORAGE_DIR / "users.json"
 SUBSCRIPTIONS_FILE = STORAGE_DIR / "subscriptions.json"
 
