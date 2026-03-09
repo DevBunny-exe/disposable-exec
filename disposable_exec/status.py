@@ -1,28 +1,34 @@
-import json
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent
-STATUS_FILE = BASE_DIR / "storage" / "status.json"
+from .db import get_conn
 
 
 def set_status(execution_id, status):
-    try:
-        with open(STATUS_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except:
-        data = {}
+    conn = get_conn()
+    existing = conn.execute(
+        "SELECT execution_id FROM execution_status WHERE execution_id = ?",
+        (execution_id,),
+    ).fetchone()
 
-    data[execution_id] = status
+    if existing:
+        conn.execute(
+            "UPDATE execution_status SET status = ? WHERE execution_id = ?",
+            (status, execution_id),
+        )
+    else:
+        conn.execute(
+            "INSERT INTO execution_status (execution_id, status) VALUES (?, ?)",
+            (execution_id, status),
+        )
 
-    with open(STATUS_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+    conn.commit()
+    conn.close()
 
 
 def get_status(execution_id):
-    try:
-        with open(STATUS_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except:
-        return None
+    conn = get_conn()
+    row = conn.execute(
+        "SELECT status FROM execution_status WHERE execution_id = ?",
+        (execution_id,),
+    ).fetchone()
+    conn.close()
 
-    return data.get(execution_id)
+    return row["status"] if row else None

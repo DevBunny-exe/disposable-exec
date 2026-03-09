@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "id": "key_001",
+    "user_id": "user_001",
+    "name": "default",
+    "api_key_hash": "eb0c56bfd20764d06d29b697dd16f1dddc58b5cb398e9c7932afbf7e91d8544a",
+    "plan": "Pro",
+    "is_active": true
+  },
+  {
+    "id": "key_002",
+    "user_id": "user_001",
+    "name": "default",
+    "api_key_hash": "ab816edc01b2a9869118ed710aa99ca25f1e6620c78ae5bad3240a23a15ad5e0",
+    "plan": "Pro",
+    "is_active": true
+  },
+  {
+    "id": "key_003",
+    "user_id": "user_001",
+    "name": "default",
+    "api_key_hash": "bf7d69464a4a86de6aeb0db3f2ddf94c6cb1854b7cd32a6c58d038cf081627dc",
+    "plan": "Pro",
+    "is_active": true
+  }
+]

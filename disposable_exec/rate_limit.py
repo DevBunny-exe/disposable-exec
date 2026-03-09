@@ -1,40 +1,71 @@
-import time
-from fastapi import HTTPException
+from datetime import datetime
 
-# 每个 API key 的调用记录
-request_log = {}
-
-# 不同 plan 限速
-PLAN_LIMITS = {
-    "test-key-123": 10,   # 每分钟10次
-    "dev-key-456": 30
-}
-
-WINDOW = 60  # 秒
+from .db import get_conn
 
 
-def check_rate_limit(api_key: str):
+def init_rate_limit_table():
+    conn = get_conn()
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS rate_limits (
+            key_id TEXT,
+            route TEXT,
+            window_key TEXT,
+            request_count INTEGER,
+            PRIMARY KEY (key_id, route, window_key)
+        )
+        """
+    )
+    conn.commit()
+    conn.close()
 
-    now = time.time()
 
-    if api_key not in request_log:
-        request_log[api_key] = []
+def get_minute_window_key() -> str:
+    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M")
 
-    calls = request_log[api_key]
 
-    # 清理超过时间窗口的请求
-    request_log[api_key] = [
-        t for t in calls if now - t < WINDOW
-    ]
+def check_and_increment_rate_limit(key_id: str, route: str, limit: int) -> dict:
+    window_key = get_minute_window_key()
 
-    calls = request_log[api_key]
+    conn = get_conn()
+    row = conn.execute(
+        """
+        SELECT request_count
+        FROM rate_limits
+        WHERE key_id = ? AND route = ? AND window_key = ?
+        """,
+        (key_id, route, window_key),
+    ).fetchone()
 
-    limit = PLAN_LIMITS.get(api_key, 5)
-
-    if len(calls) >= limit:
-        raise HTTPException(
-            status_code=429,
-            detail="Rate limit exceeded"
+    if row:
+        new_count = row["request_count"] + 1
+        conn.execute(
+            """
+            UPDATE rate_limits
+            SET request_count = ?
+            WHERE key_id = ? AND route = ? AND window_key = ?
+            """,
+            (new_count, key_id, route, window_key),
+        )
+    else:
+        new_count = 1
+        conn.execute(
+            """
+            INSERT INTO rate_limits (key_id, route, window_key, request_count)
+            VALUES (?, ?, ?, ?)
+            """,
+            (key_id, route, window_key, new_count),
         )
 
-    calls.append(now)
+    conn.commit()
+    conn.close()
+
+    return {
+        "allowed": new_count <= limit,
+        "count": new_count,
+        "limit": limit,
+        "window_key": window_key,
+    }
+
+
+init_rate_limit_table()
