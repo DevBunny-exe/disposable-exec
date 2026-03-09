@@ -1,17 +1,13 @@
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
-import uuid
 
 from .auth import verify_api_key
 from .plans import get_plan_quota
 from .usage import get_usage_count, increment_usage
 from .billing import handle_paddle_webhook
-
-# 你原本项目里如果这些名字不同，再按你现有函数名改
-from .queue import enqueue_execution
+from .queue import enqueue_job
 from .status import get_status
 from .results import get_result
-
 
 app = FastAPI(title="Disposable Exec API")
 
@@ -39,18 +35,14 @@ def run_code(payload: RunRequest, api_key=Depends(verify_api_key)):
     if used >= quota:
         raise HTTPException(status_code=403, detail="Monthly execution quota exceeded")
 
-    execution_id = str(uuid.uuid4())
-
-    # 扣配额：先扣再入队
+    job = enqueue_job(payload.script, key_id)
     increment_usage(key_id)
 
-    enqueue_execution(execution_id=execution_id, script=payload.script)
-
     return {
-        "execution_id": execution_id,
+        "execution_id": job["execution_id"],
         "plan": plan,
         "used": used + 1,
-        "quota": quota
+        "quota": quota,
     }
 
 
