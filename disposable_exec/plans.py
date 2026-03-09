@@ -1,8 +1,8 @@
 PLAN_QUOTA = {
     "Free": 50,
     "Starter": 3000,
-    "Pro": 20000,
-    "Scale": 100000,
+    "Pro": 12000,
+    "Scale": 40000,
 }
 
 

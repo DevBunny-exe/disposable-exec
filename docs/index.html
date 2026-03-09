@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Disposable Exec - Safe Code Execution API for AI Agents</title>
-  <meta name="description" content="Hosted sandbox API for AI agents, automations, and LLM tools. Run code safely and get stdout, stderr, exit code, and duration." />
+  <title>Disposable Exec — Safe Code Execution API for AI Agents</title>
+  <meta name="description" content="Disposable Exec is a hosted sandbox API for AI agents, automations, and developer tools. Run short-lived Python code safely and return stdout, stderr, exit code, and duration." />
   <style>
     :root {
       --bg: #0b1020;
@@ -61,6 +61,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 20px;
+      flex-wrap: wrap;
     }
 
     .brand {
@@ -189,7 +190,7 @@
     }
 
     .section {
-      padding: 24px 0 8px;
+      padding: 26px 0 8px;
     }
 
     .section h2 {
@@ -218,81 +219,36 @@
     .feature p {
       margin: 0;
       color: var(--muted);
-      font-size: 15px;
     }
 
-    .pricing {
+    .steps {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 18px;
     }
 
-    .price-card {
-      position: relative;
-    }
-
-    .price-tag {
-      font-size: 34px;
-      font-weight: 800;
-      margin: 8px 0 10px;
-    }
-
-    .price-tag span {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    .plan-desc {
-      color: var(--muted);
-      margin-bottom: 14px;
-      font-size: 15px;
-    }
-
-    .price-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 18px;
-    }
-
-    .price-list li {
-      padding: 9px 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      color: #d7ddef;
-      font-size: 15px;
-    }
-
-    .price-list li:first-child {
-      border-top: none;
-    }
-
-    .highlight {
-      border-color: rgba(115,209,61,0.35);
-      box-shadow: 0 12px 42px rgba(30,70,20,0.18);
-    }
-
-    .pill {
-      display: inline-block;
-      font-size: 12px;
-      padding: 5px 10px;
+    .step-num {
+      width: 30px;
+      height: 30px;
       border-radius: 999px;
-      background: rgba(115,209,61,0.13);
-      border: 1px solid rgba(115,209,61,0.28);
-      color: #dff7c6;
-      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(110,168,254,0.15);
+      color: #dce8ff;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
     }
 
-    .faq {
+    .split {
       display: grid;
-      gap: 14px;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
     }
 
-    .faq-item h3 {
-      margin: 0 0 6px;
-      font-size: 17px;
-    }
-
-    .faq-item p {
+    ul.clean {
+      padding-left: 18px;
       margin: 0;
       color: var(--muted);
     }
@@ -305,272 +261,240 @@
 
     .footer-links {
       display: flex;
-      flex-wrap: wrap;
       gap: 16px;
-      margin-top: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
     }
 
     @media (max-width: 920px) {
       .hero-grid,
       .features,
-      .pricing {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 40px;
-      }
-
+      .steps,
+      .split,
       .mini-grid {
         grid-template-columns: 1fr;
       }
-    }
 
-    @media (max-width: 560px) {
       h1 {
-        font-size: 34px;
+        font-size: 38px;
       }
 
       .subtitle {
         font-size: 17px;
       }
-
-      .nav-inner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
     }
   </style>
 </head>
 <body>
-  <header class="nav">
+  <div class="nav">
     <div class="container nav-inner">
       <div class="brand">Disposable Exec</div>
-      <nav class="nav-links">
+      <div class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./pricing.html">Pricing</a>
+        <a href="https://github.com/DevBunny-exe/disposable-exec">GitHub</a>
+        <a href="./terms.html">Terms</a>
+        <a href="./privacy.html">Privacy</a>
+        <a href="./refund.html">Refund</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="badge">Hosted sandbox API for AI-generated code</div>
+        <h1>Run AI-generated Python safely in a restricted sandbox.</h1>
+        <div class="subtitle">
+          Disposable Exec is a short-lived remote execution API for AI agents, automations, and developer products. Send Python code, run it inside a restricted Docker sandbox, and get structured results back.
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="./pricing.html">View pricing</a>
+          <a class="btn btn-secondary" href="https://github.com/DevBunny-exe/disposable-exec">View GitHub</a>
+        </div>
+        <div class="hero-note">
+          Built for agent tools, automation products, and developer workflows that need safer remote execution without building a full sandbox stack from scratch.
+        </div>
+      </div>
+
+      <div class="card code-card">
+<pre>POST /run
+
+{
+  "script": "print(7 + 7)"
+}
+
+→
+
+{
+  "execution_id": "2f1f8a50-0b70-4af0-b9ba-b9d4b9ef2d56",
+  "plan": "Starter",
+  "used": 1,
+  "quota": 3000
+}</pre>
+        <div class="mini-grid">
+          <div class="mini">
+            <strong>Structured output</strong>
+            stdout, stderr, exit_code, duration
+          </div>
+          <div class="mini">
+            <strong>Restricted runtime</strong>
+            Docker sandbox, timeout, no outbound network
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <h2>What it does</h2>
+      <p class="lead">
+        Disposable Exec gives AI products a hosted execution layer for short-lived Python jobs. It is not a general cloud compute platform. It is meant for safer execution of untrusted or AI-generated code.
+      </p>
+      <div class="features">
+        <div class="card feature">
+          <h3>Safer code execution</h3>
+          <p>Run generated code in an isolated Docker sandbox instead of on your main application host or customer machine.</p>
+        </div>
+        <div class="card feature">
+          <h3>Lower integration overhead</h3>
+          <p>Use an API instead of building and operating your own queue, worker, auth, quota, and sandbox layer.</p>
+        </div>
+        <div class="card feature">
+          <h3>Built for AI workflows</h3>
+          <p>Designed for agents, automations, and LLM-powered tools that need fast remote execution for short-lived tasks.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>How it works</h2>
+      <p class="lead">
+        The model is simple: submit code, process it through a queue, run it in a restricted worker sandbox, and return the result.
+      </p>
+      <div class="steps">
+        <div class="card">
+          <div class="step-num">1</div>
+          <h3>Send code</h3>
+          <p>POST a Python script to <code>/run</code> with an API key.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">2</div>
+          <h3>Sandbox execution</h3>
+          <p>The worker pulls the job from Redis and runs it inside a restricted Docker environment.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">3</div>
+          <h3>Read results</h3>
+          <p>Poll <code>/status/{execution_id}</code> and fetch stdout, stderr, exit code, and duration from <code>/result/{execution_id}</code>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Current feature set</h2>
+      <div class="split">
+        <div class="card">
+          <h3>Included now</h3>
+          <ul class="clean">
+            <li>Short-lived Python execution</li>
+            <li>Queue + worker model</li>
+            <li>API key auth</li>
+            <li>Plan quota enforcement</li>
+            <li>Basic subscription-aware access control</li>
+            <li>Rate limiting</li>
+            <li>API key lifecycle endpoints</li>
+            <li>Paddle and Lemon webhook base support</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Current sandbox direction</h3>
+          <ul class="clean">
+            <li>Docker-based isolation</li>
+            <li>Timeout enforcement</li>
+            <li>No outbound network</li>
+            <li>Restricted process limits</li>
+            <li>Read-only root filesystem direction</li>
+            <li>Structured execution result output</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Who this is for</h2>
+      <div class="features">
+        <div class="card feature">
+          <h3>AI agent builders</h3>
+          <p>Teams that need a remote tool for short Python execution without exposing their main systems.</p>
+        </div>
+        <div class="card feature">
+          <h3>Automation products</h3>
+          <p>Builders who want to execute generated logic without maintaining a full sandbox stack.</p>
+        </div>
+        <div class="card feature">
+          <h3>Developer platforms</h3>
+          <p>Products that need a hosted runtime layer with keys, quotas, and billing hooks already started.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Current project stage</h2>
+      <p class="lead">
+        Disposable Exec is currently a launch-stage MVP with a working execution core. The focus now is security hardening, billing closure, deployment preparation, and documentation cleanup.
+      </p>
+      <div class="split">
+        <div class="card">
+          <h3>Already in place</h3>
+          <ul class="clean">
+            <li>FastAPI server</li>
+            <li>Redis queue</li>
+            <li>Worker execution model</li>
+            <li>SQLite-backed state and results</li>
+            <li>Basic plan and quota handling</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Still being tightened</h3>
+          <ul class="clean">
+            <li>Webhook signature verification</li>
+            <li>Deployment and restart strategy</li>
+            <li>Production environment secrets</li>
+            <li>Docs/examples expansion</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Pricing</h2>
+      <p class="lead">
+        The current pricing model is designed to keep higher tiers discounted without turning the product into a low-margin bulk execution channel.
+      </p>
+      <div class="card">
+        <ul class="clean">
+          <li>Free — 50 executions</li>
+          <li>Starter — $9 / month — 3,000 executions</li>
+          <li>Pro — $29 / month — 12,000 executions</li>
+          <li>Scale — $99 / month — 40,000 executions</li>
+        </ul>
+        <p style="margin-top:16px; color: var(--muted);">
+          See the full breakdown on the <a href="./pricing.html">pricing page</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>Disposable Exec — hosted short-lived code execution for AI tools.</div>
+      <div class="footer-links">
         <a href="./pricing.html">Pricing</a>
         <a href="./terms.html">Terms</a>
         <a href="./privacy.html">Privacy</a>
         <a href="./refund.html">Refund</a>
-        <a href="https://github.com/DevBunny-exe/disposable-exec" target="_blank" rel="noopener noreferrer">GitHub</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <div class="badge">Hosted sandbox API for agents, automations, and LLM tools</div>
-          <h1>Safe code execution API for AI agents</h1>
-          <p class="subtitle">
-            Give your app a hosted execution environment in minutes.
-            Run one-off code safely and get stdout, stderr, exit code, and duration through a simple API.
-          </p>
-
-          <div class="cta-row">
-            <a class="btn btn-primary" href="./pricing.html">View Pricing</a>
-            <a class="btn btn-secondary" href="https://github.com/DevBunny-exe/disposable-exec" target="_blank" rel="noopener noreferrer">View GitHub</a>
-          </div>
-
-          <div class="hero-note">
-            Built for AI agents, developer tools, code automation workflows, and hosted LLM applications.
-          </div>
-        </div>
-
-        <div class="card code-card">
-<pre>from disposable_exec import Client
-
-client = Client("API_KEY")
-
-result = client.run("print(7 + 7)")
-print(result)
-
-# {
-#   "stdout": "14\n",
-#   "stderr": "",
-#   "exit_code": 0,
-#   "duration": 0.42
-# }</pre>
-
-          <div class="mini-grid">
-            <div class="mini">
-              <strong>Safe</strong>
-              Isolated execution environment for one-off code tasks.
-            </div>
-            <div class="mini">
-              <strong>Fast</strong>
-              Add execution to your app with a simple API call.
-            </div>
-            <div class="mini">
-              <strong>Hosted</strong>
-              No Docker setup, worker management, or queue maintenance.
-            </div>
-            <div class="mini">
-              <strong>Built for AI</strong>
-              Designed for agent tools, automations, and LLM workflows.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>Why teams use Disposable Exec</h2>
-        <p class="lead">
-          Most AI products can generate code. Fewer can run it safely in production.
-          Disposable Exec gives your application a hosted execution layer without requiring your team to maintain Docker workers, queues, and sandbox infrastructure.
-        </p>
-
-        <div class="features">
-          <div class="card feature">
-            <h3>Secure execution layer</h3>
-            <p>
-              Run short-lived code tasks in an isolated environment instead of executing generated code on your own machine or application host.
-            </p>
-          </div>
-
-          <div class="card feature">
-            <h3>Simple integration</h3>
-            <p>
-              Add code execution through an API and Python SDK. Suitable for AI agents, internal tools, and developer products.
-            </p>
-          </div>
-
-          <div class="card feature">
-            <h3>Product-ready output</h3>
-            <p>
-              Get structured results including stdout, stderr, exit code, and duration for downstream application logic and user-facing workflows.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>Typical use cases</h2>
-        <p class="lead">
-          Disposable Exec is best suited for lightweight, short-lived execution workloads.
-        </p>
-
-        <div class="features">
-          <div class="card feature">
-            <h3>AI agent tools</h3>
-            <p>Allow agents to safely execute code as part of reasoning, planning, or task workflows.</p>
-          </div>
-
-          <div class="card feature">
-            <h3>Automation pipelines</h3>
-            <p>Run temporary scripts for processing, validation, formatting, or lightweight job execution.</p>
-          </div>
-
-          <div class="card feature">
-            <h3>Developer products</h3>
-            <p>Power hosted code tools, internal sandboxes, and LLM app features without building the infrastructure yourself.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>Pricing</h2>
-        <p class="lead">
-          Simple monthly plans for solo builders, active agent workloads, and production teams.
-        </p>
-
-        <div class="pricing">
-          <div class="card price-card">
-            <h3>Starter</h3>
-            <div class="price-tag">$9 <span>/ month</span></div>
-            <div class="plan-desc">For solo builders and early prototypes.</div>
-            <ul class="price-list">
-              <li>3,000 executions / month</li>
-              <li>Hosted execution API</li>
-              <li>Structured execution results</li>
-              <li>Email support</li>
-            </ul>
-            <a class="btn btn-secondary" href="./pricing.html">See details</a>
-          </div>
-
-          <div class="card price-card highlight">
-            <div class="pill">Most practical</div>
-            <h3>Pro</h3>
-            <div class="price-tag">$29 <span>/ month</span></div>
-            <div class="plan-desc">For active AI agents and real workloads.</div>
-            <ul class="price-list">
-              <li>20,000 executions / month</li>
-              <li>Hosted execution API</li>
-              <li>Structured execution results</li>
-              <li>Priority support</li>
-            </ul>
-            <a class="btn btn-primary" href="./pricing.html">See details</a>
-          </div>
-
-          <div class="card price-card">
-            <h3>Scale</h3>
-            <div class="price-tag">$99 <span>/ month</span></div>
-            <div class="plan-desc">For production usage and larger teams.</div>
-            <ul class="price-list">
-              <li>100,000 executions / month</li>
-              <li>Hosted execution API</li>
-              <li>Structured execution results</li>
-              <li>Higher-volume usage</li>
-            </ul>
-            <a class="btn btn-secondary" href="./pricing.html">See details</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2>Frequently asked questions</h2>
-        <div class="faq">
-          <div class="card faq-item">
-            <h3>What does Disposable Exec provide?</h3>
-            <p>
-              Disposable Exec provides a hosted sandbox execution API for short-lived code tasks. It is designed for AI agents, automations, and developer applications that need remote code execution without maintaining their own execution infrastructure.
-            </p>
-          </div>
-
-          <div class="card faq-item">
-            <h3>What do I receive from an execution?</h3>
-            <p>
-              Each execution returns structured output including stdout, stderr, exit code, and duration.
-            </p>
-          </div>
-
-          <div class="card faq-item">
-            <h3>Who is this best for?</h3>
-            <p>
-              Solo builders, AI tool developers, automation builders, and teams that need a lightweight hosted code execution layer.
-            </p>
-          </div>
-
-          <div class="card faq-item">
-            <h3>Do I need to manage Docker or worker infrastructure?</h3>
-            <p>
-              No. The service is designed to remove the need for your team to manage sandbox containers, worker queues, and related infrastructure for short-lived workloads.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <div>Disposable Exec</div>
-      <div class="footer-links">
-        <a href="./pricing.html">Pricing</a>
-        <a href="./terms.html">Terms of Service</a>
-        <a href="./privacy.html">Privacy Policy</a>
-        <a href="./refund.html">Refund Policy</a>
-        <a href="https://github.com/DevBunny-exe/disposable-exec" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>
     </div>
-  </footer>
+  </div>
 </body>
 </html>

@@ -1,27 +1,29 @@
-from fastapi import FastAPI, HTTPException, Depends, Header
+import os
 
-from .auth import verify_api_key, create_api_key, disable_api_key
-from .plans import get_plan_quota
-from .usage import get_usage_count, increment_usage
+from fastapi import Depends, FastAPI, Header, HTTPException
+
+from .auth import create_api_key, disable_api_key, verify_api_key
 from .billing import (
-    handle_paddle_webhook,
+    get_latest_subscription_for_user,
     handle_lemon_webhook,
+    handle_paddle_webhook,
     handle_polar_webhook,
     handle_stripe_webhook,
-    get_latest_subscription_for_user,
 )
-from .queue import enqueue_job
-from .status import get_status
-from .results import get_result
 from .db import get_conn
+from .plans import get_plan_quota
+from .queue import enqueue_job
 from .rate_limit import check_and_increment_rate_limit
+from .results import get_result
+from .status import get_status
+from .usage import get_usage_count, increment_usage
+
 
 app = FastAPI(title="Disposable Exec API")
 
-
 RUN_RATE_LIMIT_PER_MIN = 20
 READ_RATE_LIMIT_PER_MIN = 60
-ADMIN_TOKEN = "change-this-admin-token"
+ADMIN_TOKEN = os.getenv("DISPOSABLE_EXEC_ADMIN_TOKEN", "").strip()
 
 
 def enforce_rate_limit(api_key: dict, route: str, limit: int):
@@ -34,13 +36,17 @@ def enforce_rate_limit(api_key: dict, route: str, limit: int):
     if not info["allowed"]:
         raise HTTPException(
             status_code=429,
-            detail=f"Rate limit exceeded for {route}: {info['count']}/{info['limit']} in current minute"
+            detail=f"Rate limit exceeded for {route}: {info['count']}/{info['limit']} in current minute",
         )
 
 
-def verify_admin_token(x_admin_token: str = Header(None)):
+def verify_admin_token(x_admin_token: str = Header(default=None)):
+    if not ADMIN_TOKEN:
+        raise HTTPException(status_code=500, detail="Admin token is not configured")
+
     if x_admin_token != ADMIN_TOKEN:
         raise HTTPException(status_code=403, detail="Invalid admin token")
+
     return True
 
 
@@ -77,13 +83,13 @@ def run_code(payload: dict, api_key=Depends(verify_api_key)):
         if sub_status in {"canceled", "past_due", "paused"}:
             raise HTTPException(
                 status_code=403,
-                detail=f"Subscription is not active: {sub_status}"
+                detail=f"Subscription is not active: {sub_status}",
             )
 
         if sub_status != "active":
             raise HTTPException(
                 status_code=403,
-                detail=f"Unsupported subscription status: {sub_status}"
+                detail=f"Unsupported subscription status: {sub_status}",
             )
 
         plan = sub_plan
@@ -94,7 +100,7 @@ def run_code(payload: dict, api_key=Depends(verify_api_key)):
     if used >= quota:
         raise HTTPException(status_code=403, detail="Monthly execution quota exceeded")
 
-    job = enqueue_job(script, key_id)
+    job = enqueue_job(script, key_id=key_id, user_id=user_id)
     increment_usage(key_id)
 
     return {
@@ -109,7 +115,11 @@ def run_code(payload: dict, api_key=Depends(verify_api_key)):
 def status(execution_id: str, api_key=Depends(verify_api_key)):
     enforce_rate_limit(api_key, "/status", READ_RATE_LIMIT_PER_MIN)
 
-    data = get_status(execution_id)
+    data = get_status(
+        execution_id,
+        key_id=api_key.get("id"),
+        user_id=api_key.get("user_id"),
+    )
     if data is None:
         raise HTTPException(status_code=404, detail="Execution not found")
     return data
@@ -119,7 +129,11 @@ def status(execution_id: str, api_key=Depends(verify_api_key)):
 def result(execution_id: str, api_key=Depends(verify_api_key)):
     enforce_rate_limit(api_key, "/result", READ_RATE_LIMIT_PER_MIN)
 
-    data = get_result(execution_id)
+    data = get_result(
+        execution_id,
+        key_id=api_key.get("id"),
+        user_id=api_key.get("user_id"),
+    )
     if data is None:
         raise HTTPException(status_code=404, detail="Result not found")
     return data

@@ -1,6 +1,7 @@
 import sqlite3
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent
 STORAGE_DIR = BASE_DIR / "storage"
 STORAGE_DIR.mkdir(parents=True, exist_ok=True)
@@ -12,6 +13,16 @@ def get_conn():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
+
+def column_exists(conn, table_name: str, column_name: str) -> bool:
+    rows = conn.execute(f"PRAGMA table_info({table_name})").fetchall()
+    return any(row["name"] == column_name for row in rows)
+
+
+def ensure_column(conn, table_name: str, column_name: str, column_type: str):
+    if not column_exists(conn, table_name, column_name):
+        conn.execute(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}")
 
 
 def init_db():
@@ -69,19 +80,46 @@ def init_db():
     cur.execute("""
     CREATE TABLE IF NOT EXISTS execution_status (
         execution_id TEXT PRIMARY KEY,
-        status TEXT
+        key_id TEXT,
+        user_id TEXT,
+        status TEXT,
+        created_at TEXT,
+        updated_at TEXT
     )
     """)
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS execution_results (
         execution_id TEXT PRIMARY KEY,
+        key_id TEXT,
+        user_id TEXT,
         stdout TEXT,
         stderr TEXT,
         exit_code INTEGER,
-        duration REAL
+        duration REAL,
+        created_at TEXT
     )
     """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS rate_limits (
+        key_id TEXT,
+        route TEXT,
+        window_key TEXT,
+        request_count INTEGER,
+        PRIMARY KEY (key_id, route, window_key)
+    )
+    """)
+
+    # --- lightweight migrations for older DBs ---
+    ensure_column(conn, "execution_status", "key_id", "TEXT")
+    ensure_column(conn, "execution_status", "user_id", "TEXT")
+    ensure_column(conn, "execution_status", "created_at", "TEXT")
+    ensure_column(conn, "execution_status", "updated_at", "TEXT")
+
+    ensure_column(conn, "execution_results", "key_id", "TEXT")
+    ensure_column(conn, "execution_results", "user_id", "TEXT")
+    ensure_column(conn, "execution_results", "created_at", "TEXT")
 
     conn.commit()
     conn.close()

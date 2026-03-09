@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pricing - Disposable Exec</title>
-  <meta name="description" content="Pricing for Disposable Exec, a hosted sandbox API for AI agents and LLM tools." />
+  <title>Pricing — Disposable Exec</title>
+  <meta name="description" content="Pricing for Disposable Exec, a hosted sandbox API for AI agents, automations, and developer products." />
   <style>
     :root {
       --bg: #0b1020;
@@ -87,13 +87,13 @@
     .lead {
       color: var(--muted);
       max-width: 760px;
-      margin: 0 auto 0;
+      margin: 0 auto;
       font-size: 18px;
     }
 
     .pricing {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 18px;
       padding: 32px 0 18px;
     }
@@ -143,6 +143,7 @@
       color: var(--muted);
       font-size: 15px;
       margin-bottom: 14px;
+      min-height: 52px;
     }
 
     ul {
@@ -194,6 +195,10 @@
       color: var(--muted);
     }
 
+    .box strong {
+      color: var(--text);
+    }
+
     .footer {
       padding: 16px 0 48px;
       color: var(--muted);
@@ -207,7 +212,13 @@
       margin-top: 10px;
     }
 
-    @media (max-width: 920px) {
+    @media (max-width: 1050px) {
+      .pricing {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
       .pricing {
         grid-template-columns: 1fr;
       }
@@ -219,93 +230,100 @@
   </style>
 </head>
 <body>
-  <header class="nav">
+  <div class="nav">
     <div class="container nav-inner">
       <div class="brand">Disposable Exec</div>
-      <nav class="nav-links">
+      <div class="nav-links">
         <a href="./index.html">Home</a>
+        <a href="./pricing.html">Pricing</a>
+        <a href="https://github.com/DevBunny-exe/disposable-exec">GitHub</a>
         <a href="./terms.html">Terms</a>
         <a href="./privacy.html">Privacy</a>
         <a href="./refund.html">Refund</a>
-        <a href="https://github.com/DevBunny-exe/disposable-exec" target="_blank" rel="noopener noreferrer">GitHub</a>
-      </nav>
+      </div>
     </div>
-  </header>
+  </div>
 
-  <main class="container">
-    <section class="hero">
-      <h1>Simple pricing for hosted code execution</h1>
+  <div class="container">
+    <div class="hero">
+      <h1>Simple pricing for short-lived code execution</h1>
       <p class="lead">
-        Monthly plans for solo builders, agent workflows, and production usage.
+        Disposable Exec is priced for AI tools and developer products that need a hosted sandbox runtime without building their own queue, worker, quota, and execution layer.
       </p>
-    </section>
+    </div>
 
-    <section class="pricing">
+    <div class="pricing">
       <div class="card">
-        <h2>Starter</h2>
-        <div class="price">$9 <span>/ month</span></div>
-        <div class="desc">Best for solo builders and early prototypes.</div>
+        <h2>Free</h2>
+        <div class="price">$0 <span>/ month</span></div>
+        <div class="desc">For testing the API and validating basic integration.</div>
         <ul>
-          <li>3,000 executions / month</li>
-          <li>Hosted execution API</li>
-          <li>Structured output</li>
-          <li>Email support</li>
+          <li>50 executions / month</li>
+          <li>Short-lived Python execution</li>
+          <li>Structured results</li>
+          <li>Basic API access</li>
         </ul>
-        <a class="btn" href="./index.html">Get started</a>
+        <a class="btn" href="mailto:devbunny.exe@gmail.com">Get access</a>
       </div>
 
       <div class="card highlight">
-        <div class="pill">Most practical</div>
+        <div class="pill">Best starting point</div>
+        <h2>Starter</h2>
+        <div class="price">$9 <span>/ month</span></div>
+        <div class="desc">For small agents, automation flows, and early product integrations.</div>
+        <ul>
+          <li>3,000 executions / month</li>
+          <li>API key management</li>
+          <li>Quota enforcement</li>
+          <li>Hosted sandbox execution</li>
+        </ul>
+        <a class="btn primary" href="mailto:devbunny.exe@gmail.com">Choose Starter</a>
+      </div>
+
+      <div class="card">
         <h2>Pro</h2>
         <div class="price">$29 <span>/ month</span></div>
-        <div class="desc">Best for active agent workloads and real usage.</div>
+        <div class="desc">For production agent workflows and recurring automation usage.</div>
         <ul>
-          <li>20,000 executions / month</li>
+          <li>12,000 executions / month</li>
+          <li>Discounted higher-volume usage</li>
           <li>Hosted execution API</li>
-          <li>Structured output</li>
-          <li>Priority support</li>
+          <li>Current best fit for regular product usage</li>
         </ul>
-        <a class="btn primary" href="./index.html">Choose Pro</a>
+        <a class="btn" href="mailto:devbunny.exe@gmail.com">Choose Pro</a>
       </div>
 
       <div class="card">
         <h2>Scale</h2>
         <div class="price">$99 <span>/ month</span></div>
-        <div class="desc">Best for production teams and higher-volume usage.</div>
+        <div class="desc">For teams with higher-frequency usage that still want a managed execution layer.</div>
         <ul>
-          <li>100,000 executions / month</li>
-          <li>Hosted execution API</li>
-          <li>Structured output</li>
-          <li>Higher usage capacity</li>
+          <li>40,000 executions / month</li>
+          <li>Higher-volume access</li>
+          <li>Best for team usage</li>
+          <li>Enterprise/custom later</li>
         </ul>
-        <a class="btn" href="./index.html">Contact via launch flow</a>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="box">
-        <strong style="color:#fff;">Notes</strong>
-        <p>
-          All plans are intended for short-lived code execution workloads.
-          Abuse prevention, usage limits, and service rules apply.
-          For policy details, please review our <a href="./terms.html">Terms of Service</a>,
-          <a href="./privacy.html">Privacy Policy</a>, and
-          <a href="./refund.html">Refund Policy</a>.
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <div>Disposable Exec</div>
-      <div class="footer-links">
-        <a href="./index.html">Home</a>
-        <a href="./terms.html">Terms of Service</a>
-        <a href="./privacy.html">Privacy Policy</a>
-        <a href="./refund.html">Refund Policy</a>
+        <a class="btn" href="mailto:devbunny.exe@gmail.com">Choose Scale</a>
       </div>
     </div>
-  </footer>
+
+    <div class="section">
+      <div class="box">
+        <p><strong>Important:</strong> Disposable Exec is built for short-lived Python execution. It is not intended for long-running jobs, persistent processes, or general cloud compute workloads.</p>
+        <p><strong>Current model:</strong> higher tiers are discounted versus Starter, but pricing is still structured to avoid turning the API into a low-margin bulk execution channel.</p>
+        <p><strong>Current feature direction:</strong> API keys, quota enforcement, subscription-aware access, queue + worker execution, structured results, and hosted Docker sandbox execution.</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>Disposable Exec — hosted short-lived code execution for AI tools.</div>
+      <div class="footer-links">
+        <a href="./index.html">Home</a>
+        <a href="./terms.html">Terms</a>
+        <a href="./privacy.html">Privacy</a>
+        <a href="./refund.html">Refund</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
