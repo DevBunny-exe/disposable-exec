@@ -2,7 +2,6 @@ from datetime import datetime
 
 from .storage_utils import load_json, save_json, STORAGE_DIR
 
-
 USAGE_FILE = STORAGE_DIR / "usage.json"
 
 
