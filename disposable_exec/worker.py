@@ -54,6 +54,7 @@ while True:
         duration = time.time() - start
 
         write_log(
+            execution_id,
             key_id,
             result.stdout,
             result.stderr,
