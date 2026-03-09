@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Header
 
 from .auth import verify_api_key, create_api_key, disable_api_key
 from .plans import get_plan_quota
@@ -21,6 +21,7 @@ app = FastAPI(title="Disposable Exec API")
 
 RUN_RATE_LIMIT_PER_MIN = 20
 READ_RATE_LIMIT_PER_MIN = 60
+ADMIN_TOKEN = "change-this-admin-token"
 
 
 def enforce_rate_limit(api_key: dict, route: str, limit: int):
@@ -35,6 +36,12 @@ def enforce_rate_limit(api_key: dict, route: str, limit: int):
             status_code=429,
             detail=f"Rate limit exceeded for {route}: {info['count']}/{info['limit']} in current minute"
         )
+
+
+def verify_admin_token(x_admin_token: str = Header(None)):
+    if x_admin_token != ADMIN_TOKEN:
+        raise HTTPException(status_code=403, detail="Invalid admin token")
+    return True
 
 
 @app.get("/")
@@ -67,8 +74,17 @@ def run_code(payload: dict, api_key=Depends(verify_api_key)):
         sub_status = subscription.get("status", "active")
         sub_plan = subscription.get("plan", plan)
 
+        if sub_status in {"canceled", "past_due", "paused"}:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Subscription is not active: {sub_status}"
+            )
+
         if sub_status != "active":
-            raise HTTPException(status_code=403, detail=f"Subscription is not active: {sub_status}")
+            raise HTTPException(
+                status_code=403,
+                detail=f"Unsupported subscription status: {sub_status}"
+            )
 
         plan = sub_plan
 
@@ -193,7 +209,7 @@ def disable_api_key_endpoint(key_id: str, api_key=Depends(verify_api_key)):
 
 
 @app.get("/admin/users")
-def admin_users():
+def admin_users(admin=Depends(verify_admin_token)):
     conn = get_conn()
     rows = conn.execute(
         "SELECT id, email, status, created_at FROM users ORDER BY created_at DESC"
@@ -204,7 +220,7 @@ def admin_users():
 
 
 @app.get("/admin/subscriptions")
-def admin_subscriptions():
+def admin_subscriptions(admin=Depends(verify_admin_token)):
     conn = get_conn()
     rows = conn.execute(
         """

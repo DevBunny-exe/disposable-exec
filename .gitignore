@@ -7,12 +7,17 @@ build/
 dist/
 *.egg-info/
 
+.env
+.env.*
+.DS_Store
+
+dump.rdb
+
+disposable_exec/storage/app.db
+disposable_exec/storage/*.json
+disposable_exec/storage/*.jsonl
+
 execution_logs.jsonl
 results.json
 status.json
 usage.json
-dump.rdb
-
-.env
-.env.*
-.DS_Store
