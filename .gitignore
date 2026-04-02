@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+.env.*
+
+# Local storage
+disposable_exec/storage/app.db
+disposable_exec/storage/*.db
+disposable_exec/storage/*.sqlite
+disposable_exec/storage/*.sqlite3
+disposable_exec/storage/execution_logs.jsonl
+disposable_exec/storage/results.json
+disposable_exec/storage/*.log
+
+# Redis local dump
+dump.rdb
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Local archives / notes
+*.tar
+*.tar.gz
+*.zip
+remark*
+
+# Sandbox / temp
+sandbox_tmp/
+.venv-release-check/
+*.sqlite
+*.sqlite3
+*.db
+*.log
