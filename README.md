@@ -1,5 +1,9 @@
 # Disposable Exec
 
+Website: https://disposable-exec.com  
+PyPI: https://pypi.org/project/disposable-exec/  
+GitHub: https://github.com/DevBunny-exe/disposable-exec
+
 Run unknown shell or Python code in a disposable environment before it touches your real machine.
 
 Disposable Exec is a short-lived execution API for:
