@@ -1,48 +1,41 @@
-# disposable-exec
+# Disposable Exec
 
-`disposable-exec` is a Python client for a hosted isolated execution API.
+Run unknown shell or Python code in a disposable environment before it touches your real machine.
 
-Use it when your agent, automation, or product needs to run short-lived remote code without running that code on your app server, worker host, or end-user machine.
+Disposable Exec is a short-lived execution API for:
+- testing unknown install scripts
+- isolating risky shell/python commands
+- giving AI agents a controlled execution backend
+- capturing stdout, stderr, exit code, and execution status
 
-## What this is
+It is not a general cloud platform, not a long-running container service, and not a replacement for your main host.
 
-Disposable Exec gives you a narrow, practical execution surface:
+## Why use it
 
-- API key auth
-- remote isolated execution
-- cheap diagnostics preflight via `/diagnose`
-- single-script and multi-file Python execution
-- `/me`, `/run`, `/status`, and `/result`
+Sometimes you see commands like:
 
-## Current package scope
+```bash
+curl something.sh | bash
+```
 
-This repository currently contains the Python client and related project code used to support the hosted execution service. The published PyPI package is focused on the client install path and API usage flow.
+The problem is not only malware. The real problem is uncertainty:
+- What files does it create?
+- Does it make network requests?
+- Does it spawn background processes?
+- Does it fail halfway and leave junk behind?
+- Do you really want that touching your machine?
 
-## Who it is for
+Disposable Exec lets you run first, inspect first, and decide later.
 
-- agent builders
-- automation teams
-- backend products with "run generated code" features
-- teams that want isolated execution instead of local subprocesses
+## Good fit
 
-## Why use it instead of running code locally
+Use Disposable Exec when you want to:
+- test unknown install/setup steps
+- isolate risky CLI commands
+- add disposable execution to an automation tool
+- give an AI agent code execution without exposing your app host
 
-Running generated or user-supplied code locally pushes risk and operational burden onto your app infrastructure.
-
-Disposable Exec gives you a separate execution layer so your app can submit code, track execution, and fetch results without embedding sandboxing into the main product.
-
-## 30-second quickstart
-
-1. Choose Free or a paid plan.
-2. For Free, complete the self-serve onboarding flow. For paid plans, complete checkout.
-3. Get your API key.
-4. Call `/me`.
-5. Optionally call `/diagnose`.
-6. Submit `/run`.
-7. Poll `/status`.
-8. Fetch `/result`.
-
-Free access is self-serve with `50` credits per month.
+## Quickstart
 
 Install from PyPI:
 
@@ -50,244 +43,150 @@ Install from PyPI:
 pip install disposable-exec
 ```
 
-Set your API base URL and key:
+Set your API credentials:
 
 ```bash
 export DISPOSABLE_EXEC_BASE_URL="https://api.disposable-exec.com"
-export DISPOSABLE_EXEC_API_KEY="de_xxx"
+export DISPOSABLE_EXEC_API_KEY="YOUR_API_KEY"
 ```
 
-Then initialize the client with explicit values or let it read those environment variables:
+Windows PowerShell:
+
+```powershell
+$env:DISPOSABLE_EXEC_BASE_URL="https://api.disposable-exec.com"
+$env:DISPOSABLE_EXEC_API_KEY="YOUR_API_KEY"
+```
+
+### Minimal Python example
 
 ```python
-from disposable_exec import Client
-
-client = Client()
-```
-
-## Minimal curl example
-
-Single script:
-
-```bash
-curl -sS "$DISPOSABLE_EXEC_BASE_URL/me" \
-  -H "Authorization: Bearer $DISPOSABLE_EXEC_API_KEY"
-
-curl -sS \
-  -X POST "$DISPOSABLE_EXEC_BASE_URL/run" \
-  -H "Authorization: Bearer $DISPOSABLE_EXEC_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"script":"print(2 + 2)"}'
-```
-
-Multi-file Python:
-
-```bash
-curl -sS \
-  -X POST "$DISPOSABLE_EXEC_BASE_URL/run" \
-  -H "Authorization: Bearer $DISPOSABLE_EXEC_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "entrypoint": "main.py",
-    "files": [
-      {"path": "main.py", "content": "from utils import add\nprint(add(2, 2))"},
-      {"path": "utils.py", "content": "def add(a, b):\n    return a + b"}
-    ]
-  }'
-```
-
-Single-script diagnostics:
-
-```bash
-curl -sS \
-  -X POST "https://api.disposable-exec.com/diagnose" \
-  -H "Authorization: Bearer $DISPOSABLE_EXEC_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"script":"print(2 + 2)"}'
-```
-
-Multi-file diagnostics:
-
-```bash
-curl -sS \
-  -X POST "https://api.disposable-exec.com/diagnose" \
-  -H "Authorization: Bearer $DISPOSABLE_EXEC_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "entrypoint": "main.py",
-    "files": [
-      {"path": "main.py", "content": "from utils import add\nprint(add(2, 2))"},
-      {"path": "utils.py", "content": "def add(a, b):\n    return a + b"}
-    ]
-  }'
-```
-
-## Minimal Python example
-
-```python
-import time
-
-from disposable_exec import Client
+from disposable_exec.client import Client
 
 client = Client()
 
-print(client.me())
+me = client.me()
+print(me)
 
-run_response = client.run("print(2 + 2)")
-execution_id = run_response["execution_id"]
+run_resp = client.run("print('hello from disposable exec')")
+execution_id = run_resp["execution_id"]
 
-while True:
-    status = client.status(execution_id)
-    if status["status"] in {"finished", "completed", "failed"}:
-        break
-    time.sleep(0.5)
+status = client.status(execution_id)
+print(status)
 
-print(client.result(execution_id))
+result = client.result(execution_id)
+print(result)
 ```
 
-Multi-file Python:
-
-```python
-import time
-
-from disposable_exec import Client
-
-client = Client()
-
-run_response = client.run_files(
-    entrypoint="main.py",
-    files=[
-        {"path": "main.py", "content": "from utils import add\nprint(add(2, 2))"},
-        {"path": "utils.py", "content": "def add(a, b):\n    return a + b"},
-    ],
-)
-
-execution_id = run_response["execution_id"]
-
-while True:
-    status = client.status(execution_id)
-    if status["status"] in {"finished", "completed", "failed"}:
-        break
-    time.sleep(0.5)
-
-print(client.result(execution_id))
-```
-
-Diagnostics:
-
-```python
-from disposable_exec import Client
-
-client = Client()
-
-print(client.diagnose_script("print(2 + 2)"))
-print(
-    client.diagnose_files(
-        entrypoint="main.py",
-        files=[
-            {"path": "main.py", "content": "from utils import add\nprint(add(2, 2))"},
-            {"path": "utils.py", "content": "def add(a, b):\n    return a + b"},
-        ],
-    )
-)
-```
-
-## API shape
-
-Core endpoints:
-
-- `GET /me`
-- `POST /diagnose`
-- `POST /run`
-- `GET /status`
-- `GET /result`
-
-Client methods:
-
-- `me()`
-- `diagnose_script(script)`
-- `diagnose_files(entrypoint, files)`
-- `run(script)`
-- `run_files(entrypoint, files)`
-- `status(execution_id)`
-- `result(execution_id)`
+## Core API flow
 
 Typical flow:
 
-1. get an API key
-2. call `/me`
-3. optionally call `/diagnose`
-4. submit `/run`
-5. poll `/status`
-6. fetch `/result`
+1. `me()` — check quota/account state
+2. `run()` or `run_files()` — submit execution
+3. `status(execution_id)` — poll execution state
+4. `result(execution_id)` — fetch stdout/stderr/exit code
 
-Files payload shape:
+Canonical terminal states:
+- `completed`
+- `failed`
 
-```json
-{
-  "entrypoint": "main.py",
-  "files": [
+## Client methods
+
+Current Python client methods:
+
+```python
+from disposable_exec.client import Client
+```
+
+- `Client().me()`
+- `Client().run(script)`
+- `Client().run_files(entrypoint, files)`
+- `Client().diagnose_script(script)`
+- `Client().diagnose_files(entrypoint, files)`
+- `Client().status(execution_id)`
+- `Client().result(execution_id)`
+
+## Examples
+
+### 1) Test a single script
+
+```python
+from disposable_exec.client import Client
+
+client = Client()
+resp = client.run("print('hello world')")
+print(resp)
+```
+
+### 2) Diagnose a script before running it
+
+```python
+from disposable_exec.client import Client
+
+client = Client()
+diag = client.diagnose_script("print('hello from diagnose')")
+print(diag)
+```
+
+### 3) Run multiple Python files
+
+```python
+from disposable_exec.client import Client
+
+client = Client()
+
+files = [
     {"path": "main.py", "content": "from utils import add\nprint(add(2, 2))"},
-    {"path": "utils.py", "content": "def add(a, b):\n    return a + b"}
-  ]
-}
+    {"path": "utils.py", "content": "def add(a, b):\n    return a + b"},
+]
+
+resp = client.run_files("main.py", files)
+print(resp)
 ```
 
-Use `script` for the existing single-script path or `entrypoint` plus `files` for multi-file Python execution.
+### 4) Agent / automation use case
 
-## Diagnostics
+If you are building an agent or automation system, Disposable Exec can be the execution layer instead of letting tools run directly on your app host.
 
-`/diagnose` is a cheap preflight layer for obvious issues before full execution.
+Use it when you want:
+- isolated execution
+- structured results
+- low host risk
+- easy API control
 
-Diagnostics V1 checks:
+## Product positioning
 
-- payload shape
-- path safety
-- entrypoint presence
-- hard limits
-- Python syntax
-- basic local import and file-structure issues where that can be checked cheaply
+Disposable Exec sells isolation and controlled execution.
 
-Diagnostics does not replace execution. `/run` still performs the real execution, and runtime failure handling still stops at the first unhandled runtime failure.
+It does **not** sell:
+- long-lived compute
+- arbitrary infrastructure hosting
+- a full CI platform
+- “just another VPS”
 
-## Usage and credit foundations
+## Pricing
 
-Diagnostics and execution are tracked separately.
+Current plans:
 
-- diagnostics is the lower-cost preflight layer
-- execution is the full isolated run path
-- monthly plan quotas are enforced as monthly credits
-- payload complexity is based primarily on total content size, not file count alone
-- file count is still useful for limits and observability
+- Free — 50 executions/month
+- Starter — 3,000 executions/month
+- Pro — 12,000 executions/month
+- Scale — 40,000 executions/month
 
-Current credit computation is a V1 foundation for usage accounting. It is intentionally simple and may evolve without changing the core `/diagnose` or `/run` flow.
+Check the live website for current pricing and plan details.
 
-## Runtime limits
+## Safety note
 
-Disposable Exec is for short-lived execution, not long-running jobs.
+Disposable Exec reduces the chance that unknown scripts touch your real machine directly. It does not mean every script is safe or that you should stop reviewing suspicious behavior. Isolation is the point, not blind trust.
 
-Current hosted baseline:
+## Links
 
-- Python execution
-- hard timeout: `30` seconds
-- memory limit: `128 MB`
-- CPU share limit: `0.5 CPU`
-- PID limit: `64`
-- read-only root filesystem
-- outbound network disabled
+- PyPI: https://pypi.org/project/disposable-exec/
+- Website: https://disposable-exec.com
+- GitHub: https://github.com/DevBunny-exe/disposable-env
 
-Files-mode hard limits:
+## Contact
 
-- max file count: `10`
-- max single file size: `256 KB`
-- max total content size: `1 MB`
+For product questions or integration inquiries:
 
-## Local development
-
-```bash
-docker build -t disposable-exec-sandbox -f Dockerfile.sandbox .
-cp .env.example .env
-bash scripts/start_redis.sh
-bash scripts/start_server.sh
-bash scripts/start_worker.sh
-```
+- devbunny.exe@gmail.com
