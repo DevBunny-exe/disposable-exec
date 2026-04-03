@@ -185,9 +185,9 @@ Disposable Exec reduces the chance that unknown scripts touch your real machine 
 
 ## Links
 
-- PyPI: https://pypi.org/project/disposable-exec/
-- Website: https://disposable-exec.com
-- GitHub: https://github.com/DevBunny-exe/disposable-env
+Website: https://disposable-exec.com
+Install: https://pypi.org/project/disposable-exec/
+Source: https://github.com/DevBunny-exe/disposable-exec
 
 ## Contact
 
